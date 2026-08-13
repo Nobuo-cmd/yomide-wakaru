@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#6ecff6">
+<link rel="manifest" href="manifest.webmanifest">
+<title>よんで わかる！</title>
+<style>
+:root{
+  --sky:#bfefff; --blue:#1777c8; --deep:#123b73; --yellow:#fff3a6;
+  --card:#fff; --line:#d8e8f0; --green:#69bd45; --orange:#ff9d2e; --red:#ef5350;
+  --purple:#8e63d8; --ink:#27303d;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+  background:linear-gradient(#76d5ff 0,#d9f6ff 42%,#f8fdff 100%);
+  color:var(--ink);
+  min-height:100vh;
+}
+body:before{
+  content:"";
+  position:fixed; inset:0;
+  background:
+    radial-gradient(circle at 10% 10%,rgba(255,255,255,.9) 0 2%,transparent 2.3%),
+    radial-gradient(circle at 80% 13%,rgba(255,255,255,.75) 0 2.3%,transparent 2.6%),
+    radial-gradient(circle at 65% 7%,rgba(255,255,255,.7) 0 1.6%,transparent 1.9%);
+  pointer-events:none;
+}
+.app{max-width:1180px;margin:auto;padding:14px}
+header{
+  display:grid; grid-template-columns:1fr auto auto; gap:12px; align-items:center;
+  margin-bottom:12px
+}
+.logo{
+  background:#fff;border:4px solid var(--deep);border-radius:24px;padding:8px 18px;
+  font-size:clamp(28px,4vw,52px);font-weight:900;letter-spacing:.03em;
+  box-shadow:0 6px 0 rgba(18,59,115,.15)
+}
+.logo span:nth-child(1){color:#e53935}.logo span:nth-child(2){color:#2e7d32}.logo span:nth-child(3){color:#1565c0}.logo span:nth-child(4){color:#f57c00}
+.topbtn,.counter{
+  border:3px solid #fff;background:#176db7;color:#fff;border-radius:20px;
+  padding:12px 16px;font-weight:800;font-size:18px;box-shadow:0 5px 0 rgba(0,0,0,.12)
+}
+.counter{background:#fff;color:#183a65;border-color:#dceaf2;text-align:center;min-width:140px}
+.counter b{font-size:28px}
+.grid{display:grid;grid-template-columns:1.35fr .85fr;gap:14px}
+.panel{
+  background:rgba(255,255,255,.96);border:4px solid #e1f0f7;border-radius:26px;
+  padding:16px;box-shadow:0 10px 22px rgba(24,85,120,.14)
+}
+.ribbon{
+  display:inline-block;background:#9a5b24;color:#fff;border-radius:12px;padding:7px 18px;
+  font-size:24px;font-weight:900;box-shadow:inset 0 -4px rgba(0,0,0,.12);margin-bottom:10px
+}
+.storyLayout{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;align-items:center}
+.story{
+  font-size:clamp(24px,3vw,38px);font-weight:800;line-height:1.9;letter-spacing:.03em
+}
+.line{margin:8px 0}
+.word{
+  display:inline-block;background:#fff;border:2px solid #cfe5ef;border-radius:11px;
+  padding:1px 6px;margin:2px 1px;cursor:pointer
+}
+.word:hover{background:#eef9ff}.word:active{transform:scale(.97)}
+.pic{
+  min-height:330px;border-radius:22px;background:linear-gradient(#c7f0ff 0 45%,#a7db70 45% 100%);
+  display:flex;align-items:center;justify-content:center;padding:6px;overflow:hidden;border:3px solid #a8dff2
+}
+.pic svg{width:100%;height:auto;max-height:330px}
+.hint{
+  margin-top:12px;background:#fff2f5;border:3px solid #f6b9c9;border-radius:18px;padding:11px 14px;
+  font-size:18px;font-weight:700
+}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+button,select{font:inherit}
+button{
+  border:0;border-radius:16px;padding:11px 16px;cursor:pointer;font-weight:900
+}
+.listen{background:#1266b4;color:#fff;font-size:21px;box-shadow:0 5px 0 #0b447b}
+.stop{background:#eef4f7;color:#334e5c;border:2px solid #ccdce4}
+.ratebox{background:#fff;border:2px solid #ccdce4;border-radius:16px;padding:9px 12px;font-weight:700}
+.questionTitle{
+  text-align:center;background:#e53935;color:white;border-radius:18px;padding:9px 12px;
+  font-size:26px;font-weight:900;margin-bottom:14px;box-shadow:0 5px 0 #b72424
+}
+.question{
+  background:#fff9db;border:3px dashed #f2ca58;border-radius:18px;padding:12px;
+  font-size:clamp(22px,2.7vw,32px);font-weight:900;margin-bottom:12px
+}
+.answers{display:grid;gap:12px}
+.answer{
+  display:grid;grid-template-columns:54px 1fr 90px;align-items:center;gap:10px;
+  background:#fff;border:3px solid #e4e6ea;border-radius:18px;padding:9px 12px;
+  min-height:80px;font-size:clamp(22px,2.8vw,31px);text-align:left
+}
+.answer .num{
+  width:48px;height:48px;border-radius:50%;display:grid;place-items:center;color:#fff;background:#7cb342
+}
+.answer:nth-child(2) .num{background:#fb8c00}.answer:nth-child(3) .num{background:#1e88e5}
+.answer svg{width:80px;height:62px}
+.answer.correct{border-color:#63c174;background:#eefbea}
+.answer.wrong{border-color:#ef7777;background:#fff1f1}
+.feedback{
+  margin-top:12px;min-height:78px;border-radius:18px;background:#f6f8fb;padding:12px 14px;
+  font-size:19px;font-weight:800
+}
+.feedback.ok{background:#ecf9e8;color:#267234}.feedback.ng{background:#fff0f0;color:#a72a2a}
+.next{width:100%;margin-top:12px;background:#8e63d8;color:#fff;font-size:22px;box-shadow:0 5px 0 #6847a8}
+.stars{text-align:center;font-size:28px;margin:4px 0 10px}
+.footer{text-align:center;color:#456578;font-size:13px;margin-top:10px}
+@media(max-width:850px){
+  header{grid-template-columns:1fr 1fr}.logo{grid-column:1/-1;text-align:center}
+  .grid{grid-template-columns:1fr}.storyLayout{grid-template-columns:1fr}
+  .pic{min-height:250px}.answer{grid-template-columns:50px 1fr 72px}.answer svg{width:68px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="logo"><span>よ</span><span>ん</span><span>で</span><span> わかる！</span></div>
+  <button id="readAllTop" class="topbtn">🔊 ぜんぶ きく</button>
+  <div class="counter">もんだい<br><b><span id="num">1</span> / <span id="total">10</span></b></div>
+</header>
+
+<div class="grid">
+<section class="panel">
+  <div class="ribbon">🔎 ぶんを よんでみよう！</div>
+  <div class="storyLayout">
+    <div>
+      <div id="story" class="story"></div>
+      <div class="hint">🤖 わからない ことばを おしてみよう！ その ことばだけ よみあげるよ。</div>
+      <div class="controls">
+        <button id="readAll" class="listen">🔊 ぜんぶ きく</button>
+        <label class="ratebox">よみあげ：
+          <select id="rate">
+            <option value="0.68">ゆっくり</option>
+            <option value="0.88" selected>ふつう</option>
+            <option value="1.05">すこし はやい</option>
+          </select>
+        </label>
+        <button id="stop" class="stop">⏹ とめる</button>
+      </div>
+    </div>
+    <div id="pic" class="pic"></div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="questionTitle">⭐ こたえを えらぼう！</div>
+  <div id="question" class="question"></div>
+  <div id="answers" class="answers"></div>
+  <div class="stars">⭐ <span id="score">0</span> できた！</div>
+  <div id="feedback" class="feedback">じぶんで よんでみよう。むずかしかったら 🔊 を おしてね。</div>
+  <button id="next" class="next" disabled>つぎの もんだい ▶</button>
+</section>
+</div>
+<div class="footer">読むことを楽しみながら、文字・音・意味をつなぐ練習のための教材です。</div>
+</div>
+
+<script>
+const svg = {
+cats:`<svg viewBox="0 0 360 280"><rect width="360" height="150" fill="#bdeeff"/><rect y="150" width="360" height="130" fill="#9bd76d"/><circle cx="60" cy="55" r="24" fill="#fff"/><circle cx="86" cy="58" r="18" fill="#fff"/><g fill="#f7a62b" stroke="#5a3c20" stroke-width="3"><circle cx="90" cy="175" r="35"/><path d="M62 150l10-28 18 24M118 150l-10-28-18 24"/><rect x="70" y="205" width="14" height="35" rx="6"/><rect x="95" y="205" width="14" height="35" rx="6"/></g><g fill="#777" stroke="#333" stroke-width="3"><circle cx="180" cy="175" r="35"/><path d="M152 150l10-28 18 24M208 150l-10-28-18 24"/><rect x="160" y="205" width="14" height="35" rx="6"/><rect x="185" y="205" width="14" height="35" rx="6"/></g><g fill="#f4d29b" stroke="#5a3c20" stroke-width="3"><circle cx="270" cy="175" r="35"/><path d="M242 150l10-28 18 24M298 150l-10-28-18 24"/><rect x="250" y="205" width="14" height="35" rx="6"/><rect x="275" y="205" width="14" height="35" rx="6"/></g><g stroke="#222" stroke-width="3"><circle cx="78" cy="170" r="4"/><circle cx="102" cy="170" r="4"/><path d="M85 187q5 6 10 0"/><circle cx="168" cy="170" r="4"/><circle cx="192" cy="170" r="4"/><path d="M175 187q5 6 10 0"/><circle cx="258" cy="170" r="4"/><circle cx="282" cy="170" r="4"/><path d="M265 187q5 6 10 0"/></g></svg>`,
+apple:`<svg viewBox="0 0 360 280"><rect width="360" height="280" fill="#fff3b7"/><g transform="translate(55 55)"><circle cx="70" cy="85" r="55" fill="#e84136"/><circle cx="115" cy="85" r="55" fill="#f05245"/><rect x="90" y="5" width="12" height="42" rx="5" fill="#754a23"/><ellipse cx="125" cy="28" rx="30" ry="13" fill="#4eaa52" transform="rotate(-25 125 28)"/></g><g transform="translate(205 80) scale(.8)"><circle cx="70" cy="85" r="55" fill="#e84136"/><circle cx="115" cy="85" r="55" fill="#f05245"/><rect x="90" y="5" width="12" height="42" rx="5" fill="#754a23"/></g></svg>`,
+umbrella:`<svg viewBox="0 0 360 280"><rect width="360" height="280" fill="#b9e7ff"/><g fill="#6aa5c8"><circle cx="55" cy="45" r="22"/><circle cx="80" cy="45" r="28"/><circle cx="110" cy="48" r="20"/></g><g stroke="#4d9dd2" stroke-width="5"><path d="M60 85l-10 24M90 85l-10 24M120 85l-10 24"/></g><path d="M85 185q80-110 160 0z" fill="#ff5252" stroke="#7e2b2b" stroke-width="4"/><path d="M165 184v58q0 25 26 18" fill="none" stroke="#5b4535" stroke-width="7"/><circle cx="270" cy="196" r="28" fill="#ffd3a8"/><rect x="247" y="224" width="48" height="44" rx="16" fill="#3f8de0"/></svg>`,
+slide:`<svg viewBox="0 0 360 280"><rect width="360" height="150" fill="#bceeff"/><rect y="150" width="360" height="130" fill="#96d36b"/><rect x="220" y="85" width="20" height="120" fill="#e95545"/><path d="M100 95h130l-85 115H75z" fill="#4c91e8" stroke="#245b9a" stroke-width="5"/><circle cx="85" cy="210" r="28" fill="#ffd1a3"/><rect x="62" y="235" width="46" height="35" rx="14" fill="#ff9b3d"/></svg>`,
+dog:`<svg viewBox="0 0 360 280"><rect width="360" height="280" fill="#e7f6ff"/><ellipse cx="175" cy="220" rx="115" ry="24" fill="#b9de8a"/><g fill="#b7773f" stroke="#5f3a22" stroke-width="4"><ellipse cx="165" cy="160" rx="70" ry="55"/><circle cx="220" cy="125" r="48"/><ellipse cx="190" cy="95" rx="20" ry="38"/><ellipse cx="250" cy="95" rx="20" ry="38"/><rect x="125" y="195" width="22" height="45" rx="8"/><rect x="180" y="195" width="22" height="45" rx="8"/></g><circle cx="205" cy="120" r="5"/><circle cx="235" cy="120" r="5"/><ellipse cx="222" cy="140" rx="8" ry="5" fill="#333"/><path d="M284 205h45v18h-45z" fill="#5bbbe7"/><path d="M290 180h35l10 25h-55z" fill="#8dd9f5"/></svg>`,
+train:`<svg viewBox="0 0 360 280"><rect width="360" height="280" fill="#c9efff"/><rect y="195" width="360" height="85" fill="#a7a7a7"/><rect x="55" y="78" width="250" height="125" rx="22" fill="#4c94e8" stroke="#235f9c" stroke-width="5"/><rect x="80" y="100" width="55" height="48" rx="8" fill="#e7fbff"/><rect x="150" y="100" width="55" height="48" rx="8" fill="#e7fbff"/><rect x="220" y="100" width="55" height="48" rx="8" fill="#e7fbff"/><circle cx="110" cy="215" r="22" fill="#333"/><circle cx="250" cy="215" r="22" fill="#333"/><path d="M40 245h280" stroke="#555" stroke-width="8"/></svg>`,
+sun:`<svg viewBox="0 0 360 280"><rect width="360" height="280" fill="#c7efff"/><g transform="translate(90 45)"><circle cx="0" cy="0" r="42" fill="#ffd13b"/><g stroke="#ffd13b" stroke-width="10"><path d="M0-70v-30M0 70v30M-70 0h-30M70 0h30M-50-50l-22-22M50 50l22 22M50-50l22-22M-50 50l-22 22"/></g></g><rect x="150" y="120" width="165" height="120" fill="#f4dfb4" stroke="#9f774d" stroke-width="4"/><rect x="175" y="145" width="55" height="50" fill="#fff8c6"/><rect x="245" y="145" width="45" height="95" fill="#b86f4e"/></svg>`,
+pencil:`<svg viewBox="0 0 360 280"><rect width="360" height="280" fill="#fff7c8"/><g transform="rotate(-10 180 140)"><rect x="65" y="110" width="220" height="48" rx="10" fill="#ffd23f" stroke="#ad7a00" stroke-width="4"/><polygon points="285,110 335,134 285,158" fill="#e7c19a"/><polygon points="325,129 340,134 325,139" fill="#333"/><rect x="45" y="110" width="35" height="48" rx="8" fill="#ef6f91"/></g><circle cx="105" cy="205" r="28" fill="#66b6ec"/><circle cx="180" cy="205" r="28" fill="#7bc96f"/><circle cx="255" cy="205" r="28" fill="#ff9b46"/></svg>`,
+rabbit:`<svg viewBox="0 0 360 280"><rect width="360" height="280" fill="#eaf8d7"/><g fill="#fff" stroke="#777" stroke-width="4"><ellipse cx="150" cy="62" rx="25" ry="58"/><ellipse cx="210" cy="62" rx="25" ry="58"/><circle cx="180" cy="145" r="70"/></g><circle cx="155" cy="135" r="6"/><circle cx="205" cy="135" r="6"/><ellipse cx="180" cy="155" rx="8" ry="6" fill="#ef7990"/><g transform="translate(245 165) rotate(20)"><path d="M0 0q35-45 70 0q-35 35-70 0" fill="#f47c2e"/><path d="M48-24q12-28 28-35M40-20q-2-34 12-51" stroke="#4f9f4c" stroke-width="8" fill="none"/></g></svg>`,
+boots:`<svg viewBox="0 0 360 280"><rect width="360" height="280" fill="#c5ebff"/><g stroke="#56a8d8" stroke-width="5"><path d="M55 40l-8 24M85 40l-8 24M115 40l-8 24M245 40l-8 24M275 40l-8 24"/></g><path d="M80 85v100q0 30 34 30h55q20 0 20-18q0-17-22-17h-28V85z" fill="#f7d63d" stroke="#9f7b00" stroke-width="5"/><path d="M190 85v100q0 30 34 30h55q20 0 20-18q0-17-22-17h-28V85z" fill="#4fb86c" stroke="#26713d" stroke-width="5"/></svg>`,
+book:`<svg viewBox="0 0 360 280"><rect width="360" height="280" fill="#f0e9ff"/><path d="M55 70q70-25 125 18v145q-55-38-125-18z" fill="#fff" stroke="#7b63b8" stroke-width="5"/><path d="M305 70q-70-25-125 18v145q55-38 125-18z" fill="#fff" stroke="#7b63b8" stroke-width="5"/><path d="M90 110h55M90 140h55M215 110h55M215 140h55" stroke="#7cb4d4" stroke-width="7" stroke-linecap="round"/><circle cx="180" cy="45" r="25" fill="#ffd04b"/></svg>`
+};
+
+const mini = [
+`<svg viewBox="0 0 100 70"><path d="M10 55h70l10-18H22z" fill="#4d8fe2"/><circle cx="25" cy="56" r="10"/><circle cx="70" cy="56" r="10"/></svg>`,
+`<svg viewBox="0 0 100 70"><circle cx="50" cy="35" r="25" fill="#e43d30"/><path d="M50 10v-8" stroke="#79502a" stroke-width="6"/></svg>`,
+`<svg viewBox="0 0 100 70"><path d="M15 52q35-48 70 0z" fill="#ef5350"/><path d="M50 50v18" stroke="#654321" stroke-width="5"/></svg>`
+];
+
+const items=[
+{pic:"cats",story:["こうえんに ねこが 3びき いました。","あとから 2ひき やってきました。"],q:"ねこは ぜんぶで なんびき？",choices:["4ひき","5ひき","6ひき"],ans:1,exp:"3びき と 2ひきで、5ひきだね。"},
+{pic:"apple",story:["あかい りんごが 4こ あります。","1こ たべました。"],q:"りんごは なんこ のこった？",choices:["2こ","3こ","5こ"],ans:1,exp:"4こから 1こ へって、3こだね。"},
+{pic:"umbrella",story:["そらに くろい くもが あります。","ゆうたくんは かさを もちました。"],q:"ゆうたくんは、なぜ かさを もったのかな？",choices:["あめが ふりそうだから","ねむいから","おなかが すいたから"],ans:0,exp:"くろい くもを みて、あめが ふりそうだと おもったんだね。"},
+{pic:"slide",story:["みきちゃんは こうえんへ いきました。","すべりだいで あそびました。"],q:"みきちゃんは どこで あそんだ？",choices:["こうえん","びょういん","えき"],ans:0,exp:"こうえんで あそんだね。"},
+{pic:"dog",story:["いぬが みずを のみました。","たくさん はしったので、のどが かわいていました。"],q:"いぬは、なぜ みずを のんだのかな？",choices:["のどが かわいたから","ねむかったから","さむかったから"],ans:0,exp:"たくさん はしって、のどが かわいたんだね。"},
+{pic:"train",story:["でんしゃが えきに つきました。","おきゃくさんが おりました。"],q:"どこから おきゃくさんが おりた？",choices:["でんしゃ","ふね","じてんしゃ"],ans:0,exp:"でんしゃから おりたね。"},
+{pic:"sun",story:["あさ、たいようが でました。","へやが あかるく なりました。"],q:"へやが あかるく なったのは なぜ？",choices:["たいようが でたから","よるに なったから","ゆきが ふったから"],ans:0,exp:"たいようの ひかりで あかるく なったんだね。"},
+{pic:"pencil",story:["こうたくんは えんぴつを 2ほん もっています。","おねえさんが 3ぼん くれました。"],q:"えんぴつは ぜんぶで なんぼん？",choices:["4ほん","5ほん","6ほん"],ans:1,exp:"2ほん と 3ぼんで、5ほんだね。"},
+{pic:"rabbit",story:["うさぎは にんじんが すきです。","きょうも にんじんを たべました。"],q:"うさぎが すきな たべものは？",choices:["にんじん","さかな","パン"],ans:0,exp:"にんじんが すきなんだね。"},
+{pic:"boots",story:["あめが ふって います。","さきちゃんは ながぐつを はいて そとへ でました。"],q:"さきちゃんは、なぜ ながぐつを はいたのかな？",choices:["あめで ぬれにくいから","はやく ねるため","ごはんを たべるため"],ans:0,exp:"あめの ひは、ながぐつだと あしが ぬれにくいね。"}
+];
+
+let idx=0, score=0, answered=false;
+const $=id=>document.getElementById(id);
+$("total").textContent=items.length;
+
+function speak(t){
+  if(!("speechSynthesis" in window)){alert("このブラウザでは よみあげが つかえません。");return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t.replace(/\s+/g," "));
+  u.lang="ja-JP";u.rate=Number($("rate").value);u.pitch=1;
+  speechSynthesis.speak(u);
+}
+function tokens(s){
+  return s.split(/(\s+)/).map(p=>{
+    if(/^\s+$/.test(p)) return p;
+    const c=p.replace(/[。、！？]/g,"");
+    return `<span class="word" data-say="${c}">${p}</span>`;
+  }).join("");
+}
+function render(){
+  answered=false;
+  const x=items[idx];
+  $("num").textContent=idx+1;$("score").textContent=score;
+  $("story").innerHTML=x.story.map(s=>`<div class="line">${tokens(s)}</div>`).join("");
+  $("pic").innerHTML=svg[x.pic];
+  $("question").innerHTML="❓ "+tokens(x.q);
+  $("answers").innerHTML="";
+  x.choices.forEach((c,i)=>{
+    const b=document.createElement("button");b.className="answer";
+    b.innerHTML=`<span class="num">${i+1}</span><span>${c}</span>${mini[i]}`;
+    b.onclick=()=>check(i,b);$("answers").appendChild(b);
+  });
+  $("feedback").className="feedback";$("feedback").textContent="じぶんで よんでみよう。むずかしかったら 🔊 を おしてね。";
+  $("next").disabled=true;
+  $("next").textContent=idx===items.length-1?"さいごまで できた！ ▶":"つぎの もんだい ▶";
+  document.querySelectorAll(".word").forEach(w=>w.onclick=()=>speak(w.dataset.say));
+}
+function check(i,b){
+  if(answered)return;answered=true;const x=items[idx];
+  const bs=[...document.querySelectorAll(".answer")];
+  if(i===x.ans){score++;b.classList.add("correct");$("feedback").className="feedback ok";$("feedback").textContent="🎉 せいかい！ "+x.exp;speak("せいかい！ "+x.exp);}
+  else{b.classList.add("wrong");bs[x.ans].classList.add("correct");$("feedback").className="feedback ng";$("feedback").textContent="だいじょうぶ。いっしょに みてみよう。 "+x.exp;speak("だいじょうぶ。"+x.exp);}
+  $("score").textContent=score;$("next").disabled=false;
+}
+function readAll(){const x=items[idx];speak(x.story.join(" ")+" "+x.q)}
+$("readAll").onclick=readAll;$("readAllTop").onclick=readAll;$("stop").onclick=()=>speechSynthesis.cancel();
+$("next").onclick=()=>{
+  speechSynthesis.cancel();
+  if(idx<items.length-1){idx++;render();return;}
+  $("story").innerHTML='<div class="line">🎊 おしまい！</div><div class="line">10もん よく がんばりました。</div>';
+  $("pic").innerHTML=svg.book;$("question").textContent=`⭐ ${score}もん できたよ！`;
+  $("answers").innerHTML="";$("feedback").className="feedback ok";$("feedback").textContent="また やってみよう！";
+  $("next").disabled=false;$("next").textContent="もういちど はじめから";
+  $("next").onclick=()=>{idx=0;score=0;location.reload()};
+  speak("おしまい！ よく がんばりました。");
+};
+render();
+
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
+</script>
+</body>
+</html>
