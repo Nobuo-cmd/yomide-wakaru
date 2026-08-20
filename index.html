@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#6ecff6">
-<link rel="manifest" href="manifest.webmanifest">
+<script type="text/javascript" nonce="e0a2f8b7c51a4e9f93d1936876a" src="//local.adguard.org?ts=1787194211679&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_00000000680c8230ad840ed580163b9f%26fn%3Dindex_with_vol2_button.html%26cd%3Dattachment%26ts%3D496444%26p%3Dfs%26cid%3D1%26sig%3D78173995080b2e22f512a844eb3a5975d40591652581a444c173698a6cd0dc01%26v%3D0&amp;app=chrome.exe&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1"></script><script type="text/javascript" nonce="e0a2f8b7c51a4e9f93d1936876a" src="//local.adguard.org?ts=1787194211679&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script"></script><link rel="manifest" href="manifest.webmanifest">
 <title>よんで わかる！</title>
 <style>
 :root{
@@ -44,6 +44,21 @@ header{
   border:3px solid #fff;background:#176db7;color:#fff;border-radius:20px;
   padding:12px 16px;font-weight:800;font-size:18px;box-shadow:0 5px 0 rgba(0,0,0,.12)
 }
+.vol2btn{
+  display:block;
+  margin:0 0 12px auto;
+  width:max-content;
+  background:#8e63d8;
+  color:#fff;
+  border:3px solid #fff;
+  border-radius:18px;
+  padding:10px 18px;
+  font-size:20px;
+  font-weight:900;
+  text-decoration:none;
+  box-shadow:0 5px 0 rgba(86,52,145,.28);
+}
+.vol2btn:active{transform:scale(.98)}
 .counter{background:#fff;color:#183a65;border-color:#dceaf2;text-align:center;min-width:140px}
 .counter b{font-size:28px}
 .grid{display:grid;grid-template-columns:1.35fr .85fr;gap:14px}
@@ -126,6 +141,8 @@ button{
   <div class="counter">もんだい<br><b><span id="num">1</span> / <span id="total">10</span></b></div>
 </header>
 
+<a class="vol2btn" href="vol2/">📘 第2巻へ ▶</a>
+
 <div class="grid">
 <section class="panel">
   <div class="ribbon">🔎 ぶんを よんでみよう！</div>
@@ -135,12 +152,15 @@ button{
       <div class="hint">🤖 わからない ことばを おしてみよう！ その ことばだけ よみあげるよ。</div>
       <div class="controls">
         <button id="readAll" class="listen">🔊 ぜんぶ きく</button>
-        <label class="ratebox">よみあげ：
+        <label class="ratebox">はやさ：
           <select id="rate">
             <option value="0.68">ゆっくり</option>
             <option value="0.88" selected>ふつう</option>
             <option value="1.05">すこし はやい</option>
           </select>
+        </label>
+        <label class="ratebox">こえ：
+          <select id="voice"><option value="">じどう</option></select>
         </label>
         <button id="stop" class="stop">⏹ とめる</button>
       </div>
@@ -158,7 +178,7 @@ button{
   <button id="next" class="next" disabled>つぎの もんだい ▶</button>
 </section>
 </div>
-<div class="footer">読むことを楽しみながら、文字・音・意味をつなぐ練習のための教材です。</div>
+<div class="footer">読むことを楽しみながら、文字・音・意味をつなぐ練習のための教材です。｜読み上げ改善版</div>
 </div>
 
 <script>
@@ -199,11 +219,47 @@ let idx=0, score=0, answered=false;
 const $=id=>document.getElementById(id);
 $("total").textContent=items.length;
 
+// 画面に見せる文字は正しい表記のまま、読み上げ時だけ自然な発音に補正します。
+function naturalizeText(t){
+  let x=t;
+  // 助詞：「は」→「わ」、「へ」→「え」。語の途中の「は・へ」は変えません。
+  x=x.replace(/は(?=[、。！？\s]|$)/g,"わ");
+  x=x.replace(/へ(?=[、。！？\s]|$)/g,"え");
+  // この教材で使う数え方を、音声用に読みやすいひらがなへ。
+  const counts={
+    "1こ":"いっこ","2こ":"にこ","3こ":"さんこ","4こ":"よんこ","5こ":"ごこ","6こ":"ろっこ",
+    "1ひき":"いっぴき","2ひき":"にひき","3びき":"さんびき","4ひき":"よんひき","5ひき":"ごひき","6ひき":"ろっぴき",
+    "1ほん":"いっぽん","2ほん":"にほん","3ぼん":"さんぼん","4ほん":"よんほん","5ほん":"ごほん","6ほん":"ろっぽん"
+  };
+  for(const [a,b] of Object.entries(counts)) x=x.split(a).join(b);
+  return x.replace(/\s+/g," ");
+}
+
+let japaneseVoices=[];
+function loadVoices(){
+  if(!("speechSynthesis" in window)) return;
+  japaneseVoices=speechSynthesis.getVoices().filter(v=>/^ja(-|_)/i.test(v.lang));
+  const sel=$("voice");
+  const current=sel.value;
+  sel.innerHTML='<option value="">じどう</option>';
+  japaneseVoices.forEach((v,i)=>{
+    const o=document.createElement("option");o.value=String(i);
+    o.textContent=v.name.replace(/Microsoft |Google /g,"");sel.appendChild(o);
+  });
+  if([...sel.options].some(o=>o.value===current)) sel.value=current;
+}
+if("speechSynthesis" in window){
+  loadVoices();
+  speechSynthesis.onvoiceschanged=loadVoices;
+}
+
 function speak(t){
   if(!("speechSynthesis" in window)){alert("このブラウザでは よみあげが つかえません。");return;}
   speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(t.replace(/\s+/g," "));
+  const u=new SpeechSynthesisUtterance(naturalizeText(t));
   u.lang="ja-JP";u.rate=Number($("rate").value);u.pitch=1;
+  const vi=$("voice").value;
+  if(vi!=="" && japaneseVoices[Number(vi)]) u.voice=japaneseVoices[Number(vi)];
   speechSynthesis.speak(u);
 }
 function tokens(s){
