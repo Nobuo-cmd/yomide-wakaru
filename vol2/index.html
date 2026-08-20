@@ -1,0 +1,28 @@
+<!doctype html><html lang="ja"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#79d2ff"><link rel="manifest" href="manifest.webmanifest">
+<title>よんで わかる！ 第2巻</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;background:linear-gradient(#79d2ff,#e6f9ff 48%,#fff8d7);color:#243243;min-height:100vh}
+.wrap{max-width:980px;margin:auto;padding:18px}.hero{background:#fff;border:4px solid #164f89;border-radius:28px;padding:18px;text-align:center;box-shadow:0 8px 0 rgba(22,79,137,.15)}
+.hero h1{font-size:clamp(34px,6vw,58px);margin:0;font-weight:900}.hero p{font-size:19px;font-weight:800;color:#567}.points{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.point{background:#fff8d7;border:3px solid #f0d368;border-radius:18px;padding:8px 16px;font-weight:900}.point b{color:#e06b00;font-size:28px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:18px}.card{background:#fff;border:4px solid #dceff6;border-radius:26px;padding:18px;text-decoration:none;color:#243243;box-shadow:0 8px 18px rgba(35,94,130,.13)}
+.card h2{margin:0 0 8px;font-size:28px}.card p{font-size:17px;font-weight:700;color:#567}.go{display:inline-block;margin-top:8px;background:#8e66d9;color:#fff;border-radius:14px;padding:9px 14px;font-weight:900}
+.step5{grid-column:1/-1;border-color:#f0c348;background:#fffbea}.goal{margin-top:18px;background:#fff3f6;border:3px solid #f4bfd0;border-radius:20px;padding:14px;font-weight:800;text-align:center}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.step5{grid-column:auto}}
+</style></head><body><div class="wrap">
+<div class="hero"><h1>📘 よんで わかる！ 第2巻</h1><p>ことば → ぶん → いみ → 「てことね！」 → クレーンゲーム</p>
+<div class="points"><div class="point">きょう <b id="today">0</b> pt</div><div class="point">るいせき <b id="total">0</b> pt</div></div></div>
+<div class="grid">
+<a class="card" href="step1.html"><h2>STEP 1</h2><p>ことばを ひとまとまりで よんで、えと むすびつける。</p><span class="go">はじめる ▶</span></a>
+<a class="card" href="step2.html"><h2>STEP 2</h2><p>「ねこが｜はしっています。」のように、かたまりで よむ。</p><span class="go">はじめる ▶</span></a>
+<a class="card" href="step3.html"><h2>STEP 3</h2><p>いちぶんを よんで、「だれ・なに・どこ」を つかむ。</p><span class="go">はじめる ▶</span></a>
+<a class="card" href="step4.html"><h2>STEP 4</h2><p>「てことね！」で、かいてあることから すいりする。</p><span class="go">はじめる ▶</span></a>
+<a class="card step5" href="step5.html"><h2>STEP 5 🕹️</h2><p>みじかい おはなしを よんで、こたえられたら クレーンゲームで けいひんゲット！</p><span class="go">クレーンゲームへ ▶</span></a>
+</div><div class="goal">🎯 どのSTEPも 1もん 10ポイント。おなじ問題を くりかえしても ポイントが たまるよ！</div>
+</div><script>
+function dateKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
+document.getElementById("today").textContent=Number(localStorage.getItem("yomide_v2_today_"+dateKey())||0);
+document.getElementById("total").textContent=Number(localStorage.getItem("yomide_v2_total")||0);
+if("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script></body></html>
